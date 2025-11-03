@@ -74,4 +74,5 @@ jobForm.addEventListener('submit', async (e) => {
 });
 
 // Initialize
+
 document.addEventListener('DOMContentLoaded', loadJobs);
