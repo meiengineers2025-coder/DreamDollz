@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jobs Portal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Jobs Portal</h1>
+  </header>
+
+  <main class="container">
+    <section class="left">
+      <div class="panel">
+        <h2>Add Candidate</h2>
+        <form id="candidateForm" enctype="multipart/form-data">
+          <label>Name <input name="name" required></label>
+          <label>Email <input name="email" type="email" required></label>
+          <label>Phone <input name="phone"></label>
+          <label>Skills <input name="skills"></label>
+          <label>Experience <textarea name="experience" rows="3"></textarea></label>
+          <label>Resume File <input type="file" name="resume" accept=".pdf,.doc,.docx,.txt"></label>
+          <button type="submit">Add Candidate</button>
+        </form>
+        <div id="msg"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Search Candidates</h2>
+        <input id="search" placeholder="Type name or skill">
+        <button id="searchBtn">Search</button>
+        <div id="results"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">Powered by Node.js & SQLite — Jobs Portal Demo</footer>
+
+  <script>
+  const api = '/api/candidates';
+  const msg = document.getElementById('msg');
+  const form = document.getElementById('candidateForm');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    msg.textContent = 'Uploading...';
+    const fd = new FormData(form);
+    const res = await fetch(api, { method: 'POST', body: fd });
+    const data = await res.json();
+    msg.textContent = res.ok ? '✅ Candidate added successfully!' : '❌ ' + (data.error || 'Failed');
+    if (res.ok) form.reset();
+  });
+
+  document.getElementById('searchBtn').addEventListener('click', async () => {
+    const q = document.getElementById('search').value;
+    const res = await fetch(api + '?q=' + encodeURIComponent(q));
+    const list = await res.json();
+    const box = document.getElementById('results');
+    if (!list.length) return box.innerHTML = '<p>No results.</p>';
+    box.innerHTML = list.map(c =>
+      `<div class="candidate-item">
+        <strong>${c.name}</strong> — ${c.skills || ''}<br>
+        <a href="/api/candidates/${c.id}/resume" target="_blank">Download Resume</a>
+      </div>`
+    ).join('');
+  });
+  </script>
+</body>
+</html>
