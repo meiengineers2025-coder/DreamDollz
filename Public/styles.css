@@ -1,0 +1,86 @@
+:root {
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --accent: #0b5cff;
+  --text: #222;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.topbar {
+  background: var(--accent);
+  color: #fff;
+  padding: 14px;
+  text-align: center;
+  font-size: 1.5em;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.left {
+  width: 100%;
+  max-width: 600px;
+}
+
+.panel {
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+input, textarea, button {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 4px;
+  font-size: 1em;
+}
+
+button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+button:hover {
+  background: #0945cc;
+}
+
+.candidate-item {
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  padding: 8px;
+  margin-top: 8px;
+  background: #fafafa;
+}
+
+.footer {
+  text-align: center;
+  color: #555;
+  padding: 10px;
+  font-size: 0.9em;
+}
