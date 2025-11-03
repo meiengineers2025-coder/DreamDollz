@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Jobs Portal (Server)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Jobs Portal (Server)</h1>
+  </header>
+
+  <main class="container">
+    <section class="left">
+      <div class="panel">
+        <h2>Post a job</h2>
+        <form id="postJobForm">
+          <label>Title <input name="title" required/></label>
+          <label>Company <input name="company" required/></label>
+          <label>Location <input name="location"/></label>
+          <label>Type <select name="type"><option>Full-time</option><option>Part-time</option></select></label>
+          <label>Description <textarea name="description" rows="4"></textarea></label>
+          <div class="row"><button type="submit">Post Job</button></div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>Add Candidate (Upload Resume)</h2>
+        <form id="candidateForm" enctype="multipart/form-data">
+          <label>Name <input name="name" required/></label>
+          <label>Email <input name="email" type="email" required/></label>
+          <label>Phone <input name="phone"/></label>
+          <label>Skills (comma separated) <input name="skills"/></label>
+          <label>Experience (short summary) <textarea name="experience" rows="3"></textarea></label>
+          <label>Resume file (PDF/DOC) <input name="resume" type="file" accept=".pdf,.doc,.docx,.txt"/></label>
+          <div class="row"><button type="submit">Add Candidate</button></div>
+        </form>
+        <div id="candidateMsg"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Candidate Search</h2>
+        <div class="row">
+          <input id="candQ" placeholder="name / skill / experience" />
+          <button id="candSearch">Search</button>
+          <button id="candClear" class="secondary">Clear</button>
+        </div>
+        <div id="candidatesList" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <aside class="right">
+      <div class="panel">
+        <h2>Jobs</h2>
+        <div id="jobsList">Loading...</div>
+      </div>
+
+      <div class="panel">
+        <h2>Actions</h2>
+        <div>
+          <small>To enable direct server emails, set SMTP env vars: <code>SMTP_HOST</code>, <code>SMTP_PORT</code>, <code>SMTP_USER</code>, <code>SMTP_PASS</code>, and <code>FROM_EMAIL</code>.</small>
+        </div>
+        <div style="margin-top:10px">
+          <button id="refreshAll">Refresh</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="footer">Server-backed jobs portal — resumes saved on server.</footer>
+
+<script>
+const api = '/api';
+
+// Jobs
+async function loadJobs() {
+  const res = await fetch(api + '/jobs');
+  const list = await res.json();
+  const jobsList = document.getElementById('jobsList');
+  jobsList.innerHTML = list.map(j => `<div class="job-item"><strong>${escapeHtml(j.title)}</strong><br>${escapeHtml(j.company)} · ${escapeHtml(j.location||'')}</div>`).join('') || '<div>No jobs</div>';
+}
+document.getElementById('postJobForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const payload = {
+    title: fd.get('title'),
+    company: fd.get('company'),
+    location: fd.get('location'),
+    type: fd.get('type'),
+    description: fd.get('description')
+  };
+  const res = await fetch(api + '/jobs', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+  if (res.ok) { e.target.reset(); alert('Job posted'); loadJobs(); } else { alert('Failed'); }
+});
+
+// Candidates: add with file upload
+document.getElementById('candidateForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const fd = new FormData(form);
+  const res = await fetch(api + '/candidates', { method: 'POST', body: fd });
+  const msg = document.getElementById('candidateMsg');
+  if (res.ok) {
+    const row = await res.json();
+    msg.innerText = 'Candidate added: ' + row.name;
+    form.reset();
+    searchCandidates();
+  } else {
+    const j = await res.json().catch(()=>({error:'failed'}));
+    msg.innerText = 'Error: ' + (j.error || 'Failed');
+  }
+});
+
+// Search candidates
+async function searchCandidates(q='') {
+  const listEl = document.getElementById('candidatesList');
+  const url = api + '/candidates' + (q ? '?q=' + encodeURIComponent(q) : '');
+  const res = await fetch(url);
+  if (!res.ok) { listEl.innerText = 'Search failed'; return; }
+  const arr = await res.json();
+  if (!arr.length) { listEl.innerHTML = '<div>No candidates</div>'; return; }
+  listEl.innerHTML = arr.map(c => `
+    <div class="candidate-item" style="margin-bottom:8px;padding:8px">
+      <div><strong>${escapeHtml(c.name)}</strong> — ${escapeHtml(c.email)}</div>
+      <div>${escapeHtml(c.skills||'')}</div>
+      <div style="margin-top:6px">
+        <button onclick="viewCandidate(${c.id})">View</button>
+        <button onclick="downloadResume(${c.id})">Download Resume</button>
+        <button onclick="contactCandidate(${c.id})">Contact</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.viewCandidate = async function(id) {
+  const res = await fetch(api + '/candidates?q=' + encodeURIComponent(String(id)));
+  // better: create endpoint for single candidate; but we can fetch list and filter
+  const arr = await (await fetch(api + '/candidates')).json();
+  const c = arr.find(x => x.id === id);
+  if (!c) return alert('Not found');
+  alert(`Name: ${c.name}\nEmail: ${c.email}\nPhone: ${c.phone}\nSkills: ${c.skills}\nExperience: ${c.experience}`);
+}
+
+window.downloadResume = function(id) {
+  window.open(api + '/candidates/' + id + '/resume', '_blank');
+}
+
+window.contactCandidate = async function(id) {
+  const from = prompt('Your email (will be used as reply-to):');
+  if (!from) return;
+  const subject = prompt('Subject:', 'Job opportunity');
+  if (!subject) return;
+  const message = prompt('Message:','Hello, I saw your profile and would like to talk.');
+  if (!message) return;
+  const res = await fetch(api + '/contact', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ candidateId: id, subject, message, fromEmail: from })
+  });
+  const j = await res.json().catch(()=>({error:'failed'}));
+  if (j.success) alert('Email sent!');
+  else if (j.reason === 'no-smtp-config') {
+    alert('Server has no SMTP configured. Candidate email: ' + j.candidateEmail + '\nYou can send directly from your email client.');
+  } else {
+    alert('Failed to send: ' + (j.error || JSON.stringify(j)));
+  }
+}
+
+document.getElementById('candSearch').addEventListener('click', ()=> searchCandidates(document.getElementById('candQ').value));
+document.getElementById('candClear').addEventListener('click', ()=> { document.getElementById('candQ').value=''; searchCandidates(); });
+
+document.getElementById('refreshAll').addEventListener('click', ()=>{ loadJobs(); searchCandidates(); });
+
+function escapeHtml(s){ if (!s) return ''; return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+loadJobs(); searchCandidates();
+</script>
+</body>
+</html>
