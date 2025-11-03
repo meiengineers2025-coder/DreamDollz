@@ -1,0 +1,16 @@
+{
+  "name": "jobs-portal-node",
+  "version": "1.0.0",
+  "description": "Simple Jobs Portal with resume upload and search",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "sqlite3": "^5.1.6"
+  }
+}
