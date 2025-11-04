@@ -17,4 +17,5 @@ CREATE TABLE candidates (
     phone VARCHAR(20),
     password VARCHAR(255) NOT NULL,
     resume_path VARCHAR(500)
+
 );
