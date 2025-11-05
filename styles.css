@@ -1,0 +1,115 @@
+=== FILE: public/css/styles.css (SAVE AS styles.css inside public/css/) ===
+* {
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #0099ff, #ff66c4);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid white;
+}
+
+.brand {
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+}
+
+.nav a,
+button.btn-outline {
+  margin-left: 12px;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.btn {
+  background: white;
+  color: black;
+  border: none;
+  padding: 8px 14px;
+  font-size: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  opacity: 0.8;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid white;
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.tag-input {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.tag {
+  background: #0099ff;
+  color: white;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin: 4px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tag span {
+  margin-left: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
