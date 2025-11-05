@@ -16,4 +16,5 @@ export const db = new Database(dbPath);
 
 // WAL mode = prevents database lock and improves concurrency
 db.pragma("journal_mode = WAL");
+
 db.pragma("foreign_keys = ON");
