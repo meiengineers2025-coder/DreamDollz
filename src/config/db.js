@@ -25,4 +25,5 @@ export const db = new Database(dbPath);
 
 // Improve performance / avoid locking
 db.pragma("journal_mode = WAL");
+
 db.pragma("foreign_keys = ON");
