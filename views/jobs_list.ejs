@@ -1,0 +1,42 @@
+=== FILE: jobs_list.ejs (SAVE AS jobs_list.html then rename to jobs_list.ejs) ===
+<% layout('layout') -%>
+
+<h1>Browse Jobs</h1>
+
+<div class="card">
+
+  <form action="/candidates/jobs" method="get" style="margin-bottom:15px;">
+    <input class="input" type="text" name="q" value="<%= q %>" placeholder="Search job title / skills / education">
+    <button class="btn" type="submit">Search</button>
+  </form>
+
+  <table class="table">
+    <tr>
+      <th>Title</th>
+      <th>Employer</th>
+      <th>Skills</th>
+      <th>Experience</th>
+      <th>Action</th>
+    </tr>
+
+    <% if (!jobs.length) { %>
+      <tr><td colspan="5" style="text-align:center;">No jobs found</td></tr>
+    <% } %>
+
+    <% jobs.forEach(job => { %>
+      <tr>
+        <td><%= job.title %></td>
+        <td><%= job.employer_name %></td>
+        <td><%= job.skills_csv %></td>
+        <td><%= job.experience_years %> yrs</td>
+        <td>
+          <form method="post" action="/candidates/apply/<%= job.id %>">
+            <button class="btn" type="submit">Apply</button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+
+  </table>
+
+</div>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Dream Jobs — Blue • Pink</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/styles.css"/>
+
+  <!-- Skill tags auto-create -->
+  <script defer src="/js/tags.js"></script>
+</head>
+
+<body class="bg">
+  <!-- HEADER NAV -->
+  <header class="topbar glass">
+    <a class="brand">Dream Jobs</a>
+
+    <nav>
+      <% if (user) { %>
+        <span class="userchip"><%= user.email %> • <%= user.role %></span>
+
+        <% if (user.role === 'employer') { %>
+          <a class="btn ghost" href="/employer/dashboard">Dashboard</a>
+        <% } %>
+
+        <% if (user.role === 'candidate') { %>
+          <a class="btn ghost" href="/candidate/dashboard">Dashboard</a>
+        <% } %>
+
+        <a class="btn ghost" href="/logout">Logout</a>
+      <% } else { %>
+        <a class="btn ghost" href="/login">Login</a>
+      <% } %>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container">
+    <%- body %>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">© <%= new Date().getFullYear() %> Dream Jobs</footer>
+</body>
+</html>

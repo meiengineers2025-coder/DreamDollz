@@ -1,0 +1,70 @@
+=== FILE: checkout.ejs (SAVE AS checkout.html then rename to checkout.ejs) ===
+<% layout('layout') -%>
+
+<h1>Unlock Premium Access</h1>
+
+<div class="card">
+
+  <p>
+    Pay <strong>₹<%= price %></strong> for
+    <strong>1 hour unlimited access</strong> to recommended matches.
+  </p>
+
+  <p>
+    You are purchasing access for:
+    <strong><%= role === 'employer' ? 'Employer - Recommended Candidates' : 'Candidate - Recommended Jobs' %></strong>
+  </p>
+
+  <button id="rzpButton" class="btn">Pay ₹<%= price %> with Razorpay</button>
+
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+document.getElementById("rzpButton").onclick = async function () {
+
+  // Step 1 - Ask backend to create the payment order
+  const orderRes = await fetch("/payments/create-order", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  const { order } = await orderRes.json();
+
+  // Step 2 - Configure Razorpay checkout
+  const options = {
+    key: "<%= rzp_key %>",
+    amount: order.amount,
+    currency: "INR",
+    name: "Dream Jobs Portal",
+    description: "1-hour premium access",
+    order_id: order.id,
+
+    handler: function () {
+      // Step 3 - Tell backend payment is successful
+      fetch("/payments/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role: "<%= role %>" }),
+      })
+        .then(() => {
+          // Redirect to recommended list page
+          if ("<%= role %>" === "employer") {
+            window.location.href = "/employers/recommended";
+          } else {
+            window.location.href = "/candidates/recommended";
+          }
+        });
+    },
+
+    theme: {
+      color: "#ff66c4", // optional UI customization
+    },
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+
+};
+</script>

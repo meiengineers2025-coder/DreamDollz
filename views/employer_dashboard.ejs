@@ -1,0 +1,115 @@
+=== FILE: employer_dashboard.ejs (SAVE AS employer_dashboard.html then rename to employer_dashboard.ejs) ===
+<% layout('layout') -%>
+
+<h1>Employer Dashboard</h1>
+
+<div class="grid">
+
+  <!-- JOB POST FORM -->
+  <div class="card">
+    <h2>Post a Job</h2>
+
+    <form action="/employers/jobs" method="post" class="grid">
+
+      <div class="row">
+        <div>
+          <label>Job Title</label>
+          <input class="input" name="title" required>
+        </div>
+
+        <div>
+          <label>Education Required</label>
+          <input class="input" name="education" placeholder="eg. B.Tech / MBA">
+        </div>
+      </div>
+
+      <div class="row-3">
+        <div>
+          <label>Experience (years)</label>
+          <input class="input" type="number" name="experience_years" value="0" min="0">
+        </div>
+        <div>
+          <label>Salary Min</label>
+          <input class="input" type="number" name="salary_min" value="0" min="0">
+        </div>
+        <div>
+          <label>Salary Max</label>
+          <input class="input" type="number" name="salary_max" value="0" min="0">
+        </div>
+      </div>
+
+      <div class="full">
+        <label>Skill Set</label>
+        <div id="skillsBox" class="tag-input"></div>
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            setupTagInput("skillsBox", "skills");
+          });
+        </script>
+      </div>
+
+      <div class="full">
+        <label>Additional Comments</label>
+        <textarea class="input" name="comments" rows="3"></textarea>
+      </div>
+
+      <div class="row-3">
+        <div>
+          <label>State</label>
+          <select class="input" name="state">
+            <option>Delhi</option>
+            <option>Maharashtra</option>
+            <option>Karnataka</option>
+          </select>
+        </div>
+
+        <div>
+          <label>City</label>
+          <select class="input" name="city">
+            <option>New Delhi</option>
+            <option>Mumbai</option>
+            <option>Bengaluru</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Location</label>
+          <input class="input" name="location" placeholder="Area / Landmark">
+        </div>
+      </div>
+
+      <button class="btn" type="submit">Publish Job</button>
+    </form>
+  </div>
+
+
+  <!-- JOB LIST -->
+  <div class="card">
+    <h2>Your Jobs</h2>
+
+    <table class="table">
+      <tr>
+        <th>Title</th>
+        <th>Experience</th>
+        <th>Skills</th>
+        <th>Posted</th>
+      </tr>
+
+      <% jobs.forEach(job => { %>
+        <tr>
+          <td><%= job.title %></td>
+          <td><%= job.experience_years %> yrs</td>
+          <td><%= job.skills_csv %></td>
+          <td><%= new Date(job.created_at).toLocaleString() %></td>
+        </tr>
+      <% }) %>
+    </table>
+
+    <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
+      <a class="btn" href="/payments/checkout?role=employer">Buy 1-hour Access (₹99)</a>
+      <a class="btn btn-outline" href="/employers/recommended">Recommended Candidates</a>
+    </div>
+
+  </div>
+
+</div>

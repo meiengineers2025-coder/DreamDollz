@@ -1,0 +1,46 @@
+=== FILE: recommended.ejs (SAVE AS recommended.html then rename to recommended.ejs) ===
+<% layout('layout') -%>
+
+<h1>Recommended Based on Your Profile / Job</h1>
+
+<div class="card">
+
+  <% if (!basis) { %>
+    <p style="text-align:center; padding:20px;">
+      No data available to generate recommendations.<br>
+      Please create a profile (Candidate) or post a job (Employer).
+    </p>
+  <% } else { %>
+
+    <% if (user.role === 'employer') { %>
+      <h2>Recommended Candidates (based on your last posted job)</h2>
+      <p><strong>Job Title:</strong> <%= basis.title %></p>
+      <p><strong>Required Skills:</strong> <%= basis.skills_csv %></p>
+    <% } else { %>
+      <h2>Recommended Jobs (based on your profile)</h2>
+      <p><strong>Your Skills:</strong> <%= basis.skills_csv %></p>
+    <% } %>
+
+    <table class="table" style="margin-top:10px;">
+      <tr>
+        <% if (user.role === 'employer') { %>
+          <th>Candidate Education</th>
+          <th>Skills</th>
+          <th>Experience</th>
+          <th>Resume</th>
+          <th>Match Score</th>
+        <% } else { %>
+          <th>Job Title</th>
+          <th>Skills</th>
+          <th>Experience</th>
+          <th>Posted By</th>
+          <th>Match Score</th>
+        <% } %>
+      </tr>
+
+      <% items.forEach(item => { %>
+        <tr>
+          <% if (user.role === 'employer') { %>
+            <td><%= item.education %></td>
+            <td><%= item.skills_csv %></td>
+            <td><%= item

@@ -1,0 +1,53 @@
+=== FILE: login.ejs (SAVE AS login.html then rename to login.ejs) ===
+<% layout('layout') -%>
+
+<h1>Login / Register</h1>
+
+<div class="grid">
+
+  <!-- EMPLOYER LOGIN / REGISTER -->
+  <div class="card">
+    <h2>Employer</h2>
+
+    <!-- Employer Login -->
+    <form action="/auth/login" method="post" class="grid">
+      <input class="input" type="email" name="email" placeholder="Email" required>
+      <input class="input" type="password" name="password" placeholder="Password" required>
+      <button class="btn" type="submit">Login</button>
+    </form>
+
+    <hr>
+
+    <!-- Employer Register -->
+    <form action="/auth/register" method="post" class="grid">
+      <input type="hidden" name="role" value="employer">
+
+      <input class="input" type="text" name="name" placeholder="Company Name (Optional)">
+      <input class="input" type="email" name="email" placeholder="Email" required>
+      <input class="input" type="password" name="password" placeholder="Password" required>
+
+      <button class="btn" type="submit">Register as Employer</button>
+    </form>
+  </div>
+
+
+
+  <!-- CANDIDATE LOGIN / REGISTER -->
+  <div class="card">
+    <h2>Candidate</h2>
+
+    <!-- Candidate Login -->
+    <form action="/auth/login" method="post" class="grid">
+      <input class="input" type="email" name="email" placeholder="Email" required>
+      <input class="input" type="password" name="password" placeholder="Password" required>
+      <button class="btn" type="submit">Login</button>
+    </form>
+
+    <hr>
+
+    <!-- Candidate Register -->
+    <form action="/auth/register" method="post" class="grid">
+      <input type="hidden" name="role" value="candidate">
+
+      <input class="input" type="text" name="name" placeholder="Full Name (Optional)">
+      <input class="input" type="

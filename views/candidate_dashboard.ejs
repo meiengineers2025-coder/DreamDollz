@@ -1,0 +1,95 @@
+=== FILE: candidate_dashboard.ejs (SAVE AS candidate_dashboard.html then rename to candidate_dashboard.ejs) ===
+<% layout('layout') -%>
+
+<h1>Candidate Dashboard</h1>
+
+<div class="grid">
+
+  <!-- PROFILE FORM -->
+  <div class="card">
+    <h2>Your Profile</h2>
+
+    <form action="/candidates/profile" method="post" enctype="multipart/form-data" class="grid">
+
+      <div class="full">
+        <label>Education</label>
+        <input class="input" name="education" value="<%= profile?.education || '' %>" placeholder="eg. B.Tech | MBA | Graduate">
+      </div>
+
+      <div class="full">
+        <label>Skill Set (comma or period creates a tag)</label>
+        <div id="skillsBox" class="tag-input"></div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            setupTagInput("skillsBox", "skills");
+          });
+        </script>
+      </div>
+
+      <div class="full">
+        <label>Experience (years)</label>
+        <input class="input" type="number" name="experience_years" min="0" value="<%= profile?.experience_years || 0 %>">
+      </div>
+
+      <div class="full">
+        <label>Additional Comments</label>
+        <textarea class="input" name="comments" rows="3"><%= profile?.comments || '' %></textarea>
+      </div>
+
+      <div class="full">
+        <label>Upload / Replace Resume</label>
+        <input type="file" name="resume_file" class="input">
+        <% if (profile?.resume_path) { %>
+          <p>Uploaded file:
+            <a href="<%= profile.resume_path %>" target="_blank">View Resume</a>
+          </p>
+        <% } %>
+      </div>
+
+      <button class="btn" type="submit">Save Profile</button>
+    </form>
+  </div>
+
+
+  <!-- JOB LIST -->
+  <div class="card">
+    <h2>Available Jobs</h2>
+
+    <form action="/candidates/jobs" method="get" style="margin-bottom:10px;">
+      <input class="input" type="text" name="q" placeholder="Search Job Title / Skills / Education">
+      <button class="btn" type="submit">Search</button>
+    </form>
+
+    <table class="table">
+      <tr>
+        <th>Title</th>
+        <th>Employer</th>
+        <th>Skills</th>
+        <th>Action</th>
+      </tr>
+
+      <% jobs.forEach(job => { %>
+        <tr>
+          <td><%= job.title %></td>
+          <td><%= job.employer_name %></td>
+          <td><%= job.skills_csv %></td>
+
+          <td>
+            <form method="post" action="/candidates/apply/<%= job.id %>">
+              <button class="btn" type="submit">Apply</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+
+    </table>
+
+    <div style="display:flex; gap:10px; margin-top:15px;">
+      <a class="btn" href="/payments/checkout?role=candidate">Buy 1-hour Access (₹99)</a>
+      <a class="btn btn-outline" href="/candidates/recommended">Recommended Jobs</a>
+    </div>
+
+  </div>
+
+</div>
