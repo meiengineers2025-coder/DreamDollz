@@ -63,4 +63,5 @@ function setupTagInput(containerId, hiddenInputName) {
       updateHiddenField();
     }
   });
+
 }
