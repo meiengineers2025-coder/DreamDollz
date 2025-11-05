@@ -33,4 +33,5 @@ r.post("/login", (req, res) => {
     : res.redirect("/candidate/dashboard");
 });
 
+
 export default r;
