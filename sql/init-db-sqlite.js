@@ -73,4 +73,5 @@ db.prepare(
   "INSERT OR IGNORE INTO users (id,email,password_hash,role) VALUES (2,'candidate@example.com',?, 'candidate')"
 ).run(demoPassHash);
 
+
 console.log("✅ Demo users inserted: employer@example.com / candidate@example.com (pass: 123456)");
